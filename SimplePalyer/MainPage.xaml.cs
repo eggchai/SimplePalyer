@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -26,5 +27,67 @@ namespace SimplePalyer
         {
             this.InitializeComponent();
         }
+
+        private void pause_click(object sender, RoutedEventArgs e)
+        {
+            if (buttonpause.Content == "pause")
+            {
+                mediaplayer.Pause();
+                buttonpause.Content = "play";
+            }
+            else
+            {
+                mediaplayer.Play();
+                buttonpause.Content = "pause";
+            }
+        }
+
+
+        private async void openFile_click(object sender, RoutedEventArgs e)
+        {
+            await SetLocalMedia();
+        }
+
+        async private System.Threading.Tasks.Task SetLocalMedia()
+        {
+            var openPicker = new Windows.Storage.Pickers.FileOpenPicker();
+
+            openPicker.FileTypeFilter.Add(".mp4");
+            openPicker.FileTypeFilter.Add(".mp3");
+
+            var file = await openPicker.PickSingleFileAsync();
+
+            // mediaPlayer is a MediaElement defined in XAML
+            if (file != null)
+            {
+                var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
+                mediaplayer.SetSource(stream, file.ContentType);
+
+                mediaplayer.Play();
+            }
+        }
+
+        private void FullWindow_Click(object sender, RoutedEventArgs e)
+        {
+            mediaplayer.IsFullWindow = !mediaplayer.IsFullWindow;
+        }
+
+        private void slidervolume_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+        {
+            mediaplayer.Volume = slidervolume.Value/10;
+        }
+
+
+        private void sliderposition_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+        {
+            mediaplayer.Position = TimeSpan.FromSeconds(sliderposition.Value);
+        }
+        private void gettime(object sender, RoutedEventArgs e)
+        {
+            sliderposition.Maximum = mediaplayer.NaturalDuration.TimeSpan.TotalSeconds;
+
+        }
+
     }
+
 }

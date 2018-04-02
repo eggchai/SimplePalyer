@@ -8,6 +8,26 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="50" />
+            </Grid.RowDefinitions>
+            <MediaElement x:Name="mediaplayer" Grid.Row="0" AutoPlay="True" MediaOpened="gettime" AreTransportControlsEnabled="True"/>
+            <RelativePanel Grid.Row="1"  Height="50">
+                <Button Content="Open File" x:Name="ButtonOpenFile" Click="openFile_click" />
+                <Button Content="Pause"  x:Name="buttonpause" Click="pause_click"  RelativePanel.RightOf="ButtonOpenFile"/>
+                <Slider x:Name="sliderposition"  Orientation="Horizontal" Header="进度" 
+                            Width="600"  ValueChanged="sliderposition_ValueChanged" 
+                            Value="{Binding Position, ElementName=mediaplayer}" 
+                            RelativePanel.AlignVerticalCenterWithPanel="True"
+                            RelativePanel.AlignHorizontalCenterWithPanel="True"
+                            />
+                <Slider x:Name="slidervolume"  Orientation="Horizontal" Minimum="0" Maximum="10" 
+                        Header="音量" ValueChanged="slidervolume_ValueChanged" Width="100"
+                        Value="{Binding Volume, ElementName=mediaplayer}" 
+                        RelativePanel.AlignRightWithPanel="True"/>
+            </RelativePanel>
+        </Grid>
     </Grid>
 </Page>
